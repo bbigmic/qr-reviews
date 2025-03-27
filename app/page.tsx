@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import GooglePlacesSearch from './components/GooglePlacesSearch';
 import StripePayment from './components/StripePayment';
@@ -13,7 +13,8 @@ interface Place {
   geometry?: google.maps.places.PlaceGeometry;
 }
 
-export default function Home() {
+// Komponent wewnętrzny obsługujący parametry URL
+function MainContent() {
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -185,5 +186,22 @@ export default function Home() {
         </div>
       </footer>
     </div>
+  );
+}
+
+// Komponent główny z Suspense
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="p-8 text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            Ładowanie...
+          </h1>
+        </div>
+      </div>
+    }>
+      <MainContent />
+    </Suspense>
   );
 } 
