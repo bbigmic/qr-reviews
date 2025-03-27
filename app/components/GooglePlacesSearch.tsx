@@ -16,33 +16,27 @@ interface GooglePlacesSearchProps {
 export default function GooglePlacesSearch({ onPlaceSelect }: GooglePlacesSearchProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [marker, setMarker] = useState<google.maps.Marker | null>(null);
-  const [infowindow, setInfowindow] = useState<google.maps.InfoWindow | null>(null);
 
   useEffect(() => {
     const initMap = async () => {
       if (typeof window !== 'undefined' && window.google && mapRef.current) {
         // Inicjalizacja mapy
-        const map = new window.google.maps.Map(mapRef.current, {
+        const mapInstance = new window.google.maps.Map(mapRef.current, {
           center: { lat: 52.2297, lng: 21.0122 }, // Centrum Polski
           zoom: 6,
           mapTypeControl: true,
           streetViewControl: true,
           fullscreenControl: true,
         });
-        setMap(map);
 
         // Inicjalizacja okna informacyjnego
-        const infowindow = new google.maps.InfoWindow();
-        setInfowindow(infowindow);
+        const infowindowInstance = new google.maps.InfoWindow();
 
         // Inicjalizacja markera
-        const marker = new google.maps.Marker({
-          map: map,
+        const markerInstance = new google.maps.Marker({
+          map: mapInstance,
           draggable: false,
         });
-        setMarker(marker);
 
         // Inicjalizacja autouzupełniania
         if (inputRef.current) {
@@ -50,7 +44,7 @@ export default function GooglePlacesSearch({ onPlaceSelect }: GooglePlacesSearch
             fields: ['place_id', 'geometry', 'formatted_address', 'name'],
           });
 
-          autocomplete.bindTo('bounds', map);
+          autocomplete.bindTo('bounds', mapInstance);
 
           autocomplete.addListener('place_changed', () => {
             const place = autocomplete.getPlace();
@@ -62,15 +56,15 @@ export default function GooglePlacesSearch({ onPlaceSelect }: GooglePlacesSearch
 
             // Dostosuj mapę
             if (place.geometry.viewport) {
-              map.fitBounds(place.geometry.viewport);
+              mapInstance.fitBounds(place.geometry.viewport);
             } else {
-              map.setCenter(place.geometry.location);
-              map.setZoom(17);
+              mapInstance.setCenter(place.geometry.location);
+              mapInstance.setZoom(17);
             }
 
             // Ustaw marker
-            marker.setPosition(place.geometry.location);
-            marker.setVisible(true);
+            markerInstance.setPosition(place.geometry.location);
+            markerInstance.setVisible(true);
 
             // Aktualizuj okno informacyjne
             const content = `
@@ -80,8 +74,8 @@ export default function GooglePlacesSearch({ onPlaceSelect }: GooglePlacesSearch
                 <p>Place ID: ${place.place_id || ''}</p>
               </div>
             `;
-            infowindow.setContent(content);
-            infowindow.open(map, marker);
+            infowindowInstance.setContent(content);
+            infowindowInstance.open(mapInstance, markerInstance);
 
             // Wywołaj callback tylko jeśli mamy wszystkie wymagane dane
             if (place.place_id && place.name && place.formatted_address) {
