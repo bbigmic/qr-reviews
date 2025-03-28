@@ -8,15 +8,16 @@ function SuccessContent() {
   const searchParams = useSearchParams();
   const placeId = searchParams.get('placeId');
   const sessionId = searchParams.get('session_id');
+  const type = searchParams.get('type');
 
   useEffect(() => {
     if (placeId && sessionId) {
-      // Przekieruj z powrotem do strony głównej z informacją o sukcesie i identyfikatorem sesji
-      router.push(`/?success=true&placeId=${placeId}&session_id=${sessionId}`);
+      // Przekieruj z powrotem do strony głównej z informacją o sukcesie
+      router.push(`/?success=true&placeId=${placeId}&session_id=${sessionId}${type ? `&type=${type}` : ''}`);
     } else {
       router.push('/');
     }
-  }, [placeId, sessionId, router]);
+  }, [placeId, sessionId, type, router]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">

@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+const REGULAR_PRICE = 199;
 
 interface StripePaymentProps {
   onSuccess: () => void;
@@ -13,48 +14,83 @@ interface StripePaymentProps {
 export default function StripePayment({ onSuccess, placeId }: StripePaymentProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [discountCode, setDiscountCode] = useState('');
+  const [discount, setDiscount] = useState<number | null>(null);
+  const [discountMessage, setDiscountMessage] = useState<string | null>(null);
+  const [finalPrice, setFinalPrice] = useState(REGULAR_PRICE);
 
-  const handlePayment = async () => {
+  const verifyDiscountCode = async () => {
+    setLoading(true);
+    setError(null);
+    setDiscountMessage(null);
+
     try {
-      setLoading(true);
-      setError(null);
-
-      const response = await fetch('/api/create-checkout-session', {
+      const response = await fetch('/api/verify-discount', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ placeId }),
+        body: JSON.stringify({ code: discountCode }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Wystąpił błąd podczas tworzenia sesji płatności');
+        throw new Error(data.error || 'Błąd weryfikacji kodu rabatowego');
       }
 
-      if (!data.sessionId) {
-        throw new Error('Nie otrzymano identyfikatora sesji płatności');
+      setDiscount(data.discount);
+      const newPrice = Math.round(REGULAR_PRICE * (1 - data.discount / 100) * 100) / 100;
+      setFinalPrice(newPrice);
+      setDiscountMessage(`Zastosowano rabat ${data.discount}%`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Błąd weryfikacji kodu rabatowego');
+      setDiscount(null);
+      setFinalPrice(REGULAR_PRICE);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePayment = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          placeId,
+          discountCode: discount ? discountCode : undefined,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Błąd podczas tworzenia sesji płatności');
       }
 
       const stripe = await stripePromise;
-
       if (!stripe) {
-        throw new Error('Nie można załadować Stripe');
+        throw new Error('Nie udało się załadować Stripe');
       }
 
-      const { error: stripeError } = await stripe.redirectToCheckout({
+      const { error } = await stripe.redirectToCheckout({
         sessionId: data.sessionId,
       });
 
-      if (stripeError) {
-        throw new Error(stripeError.message);
+      if (error) {
+        throw error;
       }
 
       onSuccess();
-    } catch (error) {
-      console.error('Błąd płatności:', error);
-      setError(error instanceof Error ? error.message : 'Wystąpił nieznany błąd');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Błąd podczas przetwarzania płatności');
+    } finally {
       setLoading(false);
     }
   };
@@ -66,9 +102,16 @@ export default function StripePayment({ onSuccess, placeId }: StripePaymentProps
           <h3 className="text-lg font-medium text-gray-900">
             Szczegóły zamówienia
           </h3>
-          <span className="text-2xl font-bold text-gray-900">
-            199 zł
-          </span>
+          <div className="text-right">
+            {discount && (
+              <span className="text-lg line-through text-gray-400 mr-2">
+                199 zł
+              </span>
+            )}
+            <span className="text-2xl font-bold text-gray-900">
+              {finalPrice} zł
+            </span>
+          </div>
         </div>
         <ul className="space-y-3">
           <li className="flex items-start">
@@ -96,6 +139,31 @@ export default function StripePayment({ onSuccess, placeId }: StripePaymentProps
             </span>
           </li>
         </ul>
+
+        <div className="mt-6 space-y-4">
+          <div className="flex space-x-2">
+            <input
+              type="text"
+              value={discountCode}
+              onChange={(e) => setDiscountCode(e.target.value)}
+              placeholder="Kod rabatowy"
+              className="flex-1 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              disabled={loading}
+            />
+            <button
+              onClick={verifyDiscountCode}
+              disabled={loading || !discountCode}
+              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg border border-gray-300 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Zastosuj
+            </button>
+          </div>
+          {discountMessage && (
+            <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+              <p className="text-sm text-green-700">{discountMessage}</p>
+            </div>
+          )}
+        </div>
       </div>
 
       {error && (
@@ -127,7 +195,7 @@ export default function StripePayment({ onSuccess, placeId }: StripePaymentProps
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
-            Zapłać 199 zł i wygeneruj kod QR
+            Zapłać {finalPrice} zł i wygeneruj kod QR
           </>
         )}
       </button>

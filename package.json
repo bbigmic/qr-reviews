@@ -12,6 +12,7 @@
     "@stripe/stripe-js": "^6.1.0",
     "@types/google.maps": "^3.58.1",
     "next": "15.2.4",
+    "qr-code-styling": "^1.9.1",
     "qrcode.react": "^4.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

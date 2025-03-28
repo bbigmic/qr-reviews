@@ -95,22 +95,20 @@ export default function GooglePlacesSearch({ onPlaceSelect }: GooglePlacesSearch
   }, [onPlaceSelect]);
 
   return (
-    <div className="w-full h-full min-h-screen p-4">
-      <div className="max-w-6xl mx-auto">
-        <div className="relative mb-4">
-          <input
-            ref={inputRef}
-            type="text"
-            placeholder="Wpisz nazwę swojej firmy..."
-            className="w-full p-3 pl-4 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-        <div 
-          ref={mapRef} 
-          className="w-full h-[600px] rounded-lg shadow-lg"
-          style={{ position: 'relative' }}
+    <div className="w-full">
+      <div className="relative mb-4">
+        <input
+          ref={inputRef}
+          type="text"
+          placeholder="Wpisz nazwę swojej firmy..."
+          className="w-full p-3 pl-4 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         />
       </div>
+      <div 
+        ref={mapRef} 
+        className="w-full h-[400px] rounded-lg shadow-lg"
+        style={{ position: 'relative' }}
+      />
     </div>
   );
 } 
