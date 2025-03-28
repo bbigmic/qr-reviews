@@ -61,7 +61,7 @@ export default function QRCodeDisplay({ placeId, placeName, isUpgradeFlow = fals
   const [cornerDotsColor, setCornerDotsColor] = useState("#1a1a1a");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const qrRef = useRef<HTMLDivElement>(null);
-  const qrCode = useRef<any>(null);
+  const qrCode = useRef<QRCodeStyling | null>(null);
   
   const reviewUrl = `https://search.google.com/local/writereview?placeid=${placeId}`;
 

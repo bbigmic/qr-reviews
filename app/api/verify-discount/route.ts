@@ -14,13 +14,19 @@ export async function POST(request: Request) {
     const { code } = await request.json();
 
     if (!code) {
-      return NextResponse.json({ error: 'Nie podano kodu rabatowego' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Nie podano kodu rabatowego' },
+        { status: 400 }
+      );
     }
 
     const discount = DISCOUNT_CODES[code.toLowerCase()];
 
     if (!discount) {
-      return NextResponse.json({ error: 'Nieprawidłowy kod rabatowy' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Nieprawidłowy kod rabatowy' },
+        { status: 400 }
+      );
     }
 
     return NextResponse.json({ 
@@ -28,7 +34,10 @@ export async function POST(request: Request) {
       discount,
       message: `Kod rabatowy został zastosowany. Zniżka: ${discount}%`
     });
-  } catch (error) {
-    return NextResponse.json({ error: 'Wystąpił błąd podczas weryfikacji kodu' }, { status: 500 });
+  } catch {
+    return NextResponse.json(
+      { error: 'Wystąpił błąd podczas weryfikacji kodu' },
+      { status: 500 }
+    );
   }
 } 
