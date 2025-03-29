@@ -1,0 +1,47 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Order {
+  id            String        @id @default(cuid())
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  status        String        @default("pending") // pending, completed, cancelled
+  amount        Float
+  placeId       String?
+  orderType     String        @default("standard") // standard, upgrade
+  affiliateCode AffiliateCode? @relation(fields: [codeId], references: [id])
+  codeId        String?
+}
+
+model AffiliateCode {
+  id          String    @id @default(cuid())
+  code        String    @unique
+  discount    Float     // wartość zniżki w procentach
+  commission  Float     // prowizja w procentach
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  orders      Order[]
+}
+
+model AffiliateSignup {
+  id        String   @id @default(cuid())
+  email     String
+  phone     String
+  status    String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  createdAt DateTime @default(now())
+
+  @@map("affiliate_signups")
+}

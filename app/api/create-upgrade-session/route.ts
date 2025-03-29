@@ -38,7 +38,8 @@ export async function POST(request: Request) {
       mode: 'payment',
       metadata: {
         placeId: placeId,
-        type: 'upgrade'
+        type: 'upgrade',
+        amount: 2000
       },
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/success?placeId=${placeId}&session_id={CHECKOUT_SESSION_ID}&type=upgrade`,
       cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/cancel`,

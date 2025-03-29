@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { prisma } from '@/lib/prisma';
 
 const REGULAR_PRICE = 19900; // 199 zł w groszach
 
@@ -29,11 +30,26 @@ export async function POST(request: Request) {
     }
 
     let finalPrice = REGULAR_PRICE;
+    let affiliateCodeId = null;
+
     if (discountCode) {
-      const discount = DISCOUNT_CODES[discountCode.toLowerCase()];
-      if (discount) {
-        // Obliczamy cenę w groszach po rabacie
-        finalPrice = Math.round(REGULAR_PRICE * (1 - discount / 100));
+      // Najpierw sprawdź stałe kody rabatowe
+      const staticDiscount = DISCOUNT_CODES[discountCode.toLowerCase()];
+      if (staticDiscount) {
+        finalPrice = Math.round(REGULAR_PRICE * (1 - staticDiscount / 100));
+      } else {
+        // Jeśli nie znaleziono statycznego kodu, sprawdź kody afiliacyjne
+        const affiliateCode = await prisma.affiliateCode.findFirst({
+          where: {
+            code: discountCode,
+            isActive: true
+          }
+        });
+
+        if (affiliateCode) {
+          finalPrice = Math.round(REGULAR_PRICE * (1 - affiliateCode.discount / 100));
+          affiliateCodeId = affiliateCode.id;
+        }
       }
     }
 
@@ -58,6 +74,9 @@ export async function POST(request: Request) {
       metadata: {
         placeId,
         discountCode: discountCode || '',
+        affiliateCodeId: affiliateCodeId || '',
+        type: 'standard',
+        amount: finalPrice
       },
     });
 

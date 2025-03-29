@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import QRCodeStyling from 'qr-code-styling';
+import html2canvas from 'html2canvas';
 
 type QRDotType = 'rounded' | 'dots' | 'square';
 type QRCornerSquareType = 'extra-rounded' | 'rounded' | 'square';
@@ -59,6 +60,9 @@ export default function QRCodeDisplay({ placeId, placeName, isUpgradeFlow = fals
   const [cornerSquaresColor, setCornerSquaresColor] = useState("#1a1a1a");
   const [cornerDotsStyle, setCornerDotsStyle] = useState<QRCornerDotType>("dot");
   const [cornerDotsColor, setCornerDotsColor] = useState("#1a1a1a");
+  const [showStars, setShowStars] = useState(false);
+  const [showText, setShowText] = useState(false);
+  const [customText, setCustomText] = useState("Oceń nas");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const qrRef = useRef<HTMLDivElement>(null);
   const qrCode = useRef<QRCodeStyling | null>(null);
@@ -68,8 +72,8 @@ export default function QRCodeDisplay({ placeId, placeName, isUpgradeFlow = fals
   useEffect(() => {
     if (typeof window !== 'undefined') {
       qrCode.current = new QRCodeStyling({
-        width: 256,
-        height: 256,
+        width: 1024,
+        height: 1024,
         data: reviewUrl,
         margin: 16,
         dotsOptions: {
@@ -358,15 +362,196 @@ export default function QRCodeDisplay({ placeId, placeName, isUpgradeFlow = fals
             />
           </div>
         </div>
+
+        <div className="border-t pt-6">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Dodatkowe opcje</h3>
+          <div className="space-y-4">
+            <div className="flex items-center">
+              <input
+                id="show-stars"
+                type="checkbox"
+                checked={showStars}
+                onChange={(e) => setShowStars(e.target.checked)}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              />
+              <label htmlFor="show-stars" className="ml-2 block text-sm text-gray-900">
+                Dodaj gwiazdki pod kodem QR
+              </label>
+            </div>
+            
+            <div className="flex items-center">
+              <input
+                id="show-text"
+                type="checkbox"
+                checked={showText}
+                onChange={(e) => setShowText(e.target.checked)}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              />
+              <label htmlFor="show-text" className="ml-2 block text-sm text-gray-900">
+                Dodaj tekst nad kodem QR
+              </label>
+            </div>
+
+            {showText && (
+              <div>
+                <label htmlFor="custom-text" className="block text-sm font-medium text-gray-700 mb-2">
+                  Własny tekst
+                </label>
+                <input
+                  type="text"
+                  id="custom-text"
+                  value={customText}
+                  onChange={(e) => setCustomText(e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  placeholder="Oceń nas"
+                />
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
-      <div className="bg-white p-8 rounded-xl shadow-lg mb-8" id="qr-code">
-        <div ref={qrRef} className="flex justify-center items-center"></div>
+      <div className="flex flex-col items-center mb-8">
+        <div className="flex flex-col items-center justify-center" style={{ minHeight: '400px' }}>
+          {showText && (
+            <div className="mb-2 text-2xl font-bold text-gray-900">{customText}</div>
+          )}
+          <div ref={qrRef} className="qr-container" style={{ 
+            transform: 'scale(0.35)',
+            transformOrigin: 'center center',
+            height: '358px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}></div>
+          {showStars && (
+            <div className="mt-2 flex justify-center">
+              {[...Array(5)].map((_, i) => (
+                <svg
+                  key={i}
+                  className="w-8 h-8 sm:w-10 sm:h-10 text-yellow-400"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="space-y-4">
         <button
-          onClick={handleDownloadQR}
+          onClick={() => {
+            const container = document.createElement('div');
+            container.style.position = 'absolute';
+            container.style.left = '-9999px';
+            container.style.width = '1024px';
+            container.style.height = '1024px';
+            container.style.backgroundColor = 'white';
+            container.style.display = 'flex';
+            container.style.flexDirection = 'column';
+            container.style.alignItems = 'center';
+            container.style.justifyContent = 'center';
+            container.style.padding = '20px';
+            container.style.boxSizing = 'border-box';
+
+            if (showText) {
+              const text = document.createElement('div');
+              text.textContent = customText;
+              text.style.fontSize = '48px';
+              text.style.fontWeight = 'bold';
+              text.style.marginBottom = '48px';
+              text.style.color = '#1a1a1a';
+              container.appendChild(text);
+            }
+
+            const qrContainer = document.createElement('div');
+            qrContainer.style.width = '800px';
+            qrContainer.style.height = '800px';
+            qrContainer.style.marginTop = showText ? '0' : 'auto';
+            qrContainer.style.marginBottom = showStars ? '0' : 'auto';
+            container.appendChild(qrContainer);
+
+            if (qrRef.current) {
+              const qrSvg = qrRef.current.querySelector('svg');
+              if (qrSvg) {
+                qrSvg.setAttribute('width', '800');
+                qrSvg.setAttribute('height', '800');
+                qrContainer.appendChild(qrSvg.cloneNode(true));
+              }
+            }
+
+            if (showStars) {
+              const starsContainer = document.createElement('div');
+              starsContainer.style.display = 'flex';
+              starsContainer.style.justifyContent = 'center';
+              starsContainer.style.marginTop = '48px';
+              for (let i = 0; i < 5; i++) {
+                const star = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                star.setAttribute('width', '80');
+                star.setAttribute('height', '80');
+                star.setAttribute('fill', '#fbbf24');
+                star.setAttribute('viewBox', '0 0 20 20');
+                star.innerHTML = '<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />';
+                starsContainer.appendChild(star);
+              }
+              container.appendChild(starsContainer);
+            }
+
+            document.body.appendChild(container);
+
+            // Czekamy na załadowanie kodu QR
+            setTimeout(() => {
+              // Najpierw generujemy warstwę z tekstem i gwiazdkami
+              html2canvas(container, {
+                scale: 2,
+                backgroundColor: 'white',
+                logging: false,
+                useCORS: true,
+                allowTaint: true
+              }).then((backgroundCanvas: HTMLCanvasElement) => {
+                // Teraz generujemy kod QR
+                if (qrRef.current) {
+                  html2canvas(qrRef.current, {
+                    scale: 2,
+                    backgroundColor: 'transparent',
+                    logging: false,
+                    useCORS: true,
+                    allowTaint: true
+                  }).then((qrCanvas: HTMLCanvasElement) => {
+                    // Tworzymy nowy canvas do nałożenia warstw
+                    const finalCanvas = document.createElement('canvas');
+                    finalCanvas.width = 2048; // 2x scale
+                    finalCanvas.height = 2048;
+                    const ctx = finalCanvas.getContext('2d');
+
+                    if (ctx) {
+                      // Rysujemy tło z tekstem i gwiazdkami
+                      ctx.drawImage(backgroundCanvas, 0, 0);
+                      
+                      // Obliczamy pozycję i rozmiar kodu QR
+                      const qrSize = 1600; // 2x scale
+                      const qrX = (2048 - qrSize) / 2;
+                      const qrY = (2048 - qrSize) / 2;
+                      
+                      // Rysujemy kod QR
+                      ctx.drawImage(qrCanvas, qrX, qrY, qrSize, qrSize);
+
+                      // Pobieramy finalny obraz
+                      const link = document.createElement('a');
+                      link.download = `qr-kod-${placeName.toLowerCase().replace(/\s+/g, '-')}${logo ? '-z-logo' : ''}.png`;
+                      link.href = finalCanvas.toDataURL('image/png');
+                      link.click();
+                    }
+                    
+                    document.body.removeChild(container);
+                  });
+                }
+              });
+            }, 1000);
+          }}
           className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
         >
           <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
