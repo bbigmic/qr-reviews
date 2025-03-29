@@ -1,4 +1,5 @@
 import Logo from '@/app/components/Logo';
+import Link from 'next/link';
 
 export default function Terms() {
   return (
@@ -8,10 +9,10 @@ export default function Terms() {
           <div className="flex justify-between h-16">
             <div className="flex">
               <div className="flex-shrink-0 flex items-center">
-                <a href="/" className="flex items-center">
+                <Link href="/" className="flex items-center">
                   <Logo className="h-8 w-auto mr-3" />
                   <span className="text-xl font-bold text-gray-900">QR Reviews</span>
-                </a>
+                </Link>
               </div>
             </div>
           </div>

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import Logo from '../components/Logo';
 
 interface Order {
@@ -44,7 +43,6 @@ export default function AdminPanel() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const router = useRouter();
 
   // Pobieranie zamówień
   const fetchOrders = async () => {
@@ -52,8 +50,8 @@ export default function AdminPanel() {
       const response = await fetch('/api/admin/orders');
       const data = await response.json();
       setOrders(data);
-    } catch (_err) {
-      setError('Błąd podczas pobierania zamówień');
+    } catch {
+      setError('Wystąpił błąd podczas pobierania zamówień');
     }
   };
 
@@ -63,8 +61,8 @@ export default function AdminPanel() {
       const response = await fetch('/api/admin/affiliate-codes');
       const data = await response.json();
       setAffiliateCodes(data);
-    } catch (_err) {
-      setError('Błąd podczas pobierania kodów afiliacyjnych');
+    } catch {
+      setError('Wystąpił błąd podczas pobierania kodów afiliacyjnych');
     }
   };
 
@@ -74,8 +72,8 @@ export default function AdminPanel() {
       const response = await fetch('/api/admin/affiliate-signups');
       const data = await response.json();
       setAffiliateSignups(data);
-    } catch (_err) {
-      setError('Błąd podczas pobierania zgłoszeń');
+    } catch {
+      setError('Wystąpił błąd podczas pobierania zgłoszeń');
     }
   };
 
@@ -97,8 +95,8 @@ export default function AdminPanel() {
       await fetchAffiliateCodes();
       setNewCode({ code: '', discount: '', commission: '' });
       setIsModalOpen(false);
-    } catch (_err) {
-      setError('Błąd podczas dodawania kodu afiliacyjnego');
+    } catch {
+      setError('Wystąpił błąd podczas dodawania kodu afiliacyjnego');
     }
     setLoading(false);
   };
@@ -113,8 +111,8 @@ export default function AdminPanel() {
       });
       if (!response.ok) throw new Error('Błąd podczas aktualizacji statusu');
       await fetchSignups();
-    } catch (_err) {
-      setError('Błąd podczas aktualizacji statusu zgłoszenia');
+    } catch {
+      setError('Wystąpił błąd podczas aktualizacji statusu zgłoszenia');
     }
   };
 
