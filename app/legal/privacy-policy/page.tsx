@@ -74,7 +74,7 @@ export default function PrivacyPolicy() {
             <ul className="list-disc pl-6 mt-2">
               <li>Dostępu do swoich danych</li>
               <li>Sprostowania danych</li>
-              <li>Usunięcia danych ("prawo do bycia zapomnianym")</li>
+              <li>Usunięcia danych (&quot;prawo do bycia zapomnianym&quot;)</li>
               <li>Ograniczenia przetwarzania</li>
               <li>Przenoszenia danych</li>
               <li>Wniesienia sprzeciwu</li>
