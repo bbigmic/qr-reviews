@@ -116,15 +116,6 @@ export default function QRCodeDisplay({ placeId, placeName, isUpgradeFlow = fals
     }
   };
 
-  const handleDownloadQR = () => {
-    if (qrCode.current) {
-      qrCode.current.download({
-        extension: 'png',
-        name: `qr-kod-${placeName.toLowerCase().replace(/\s+/g, '-')}${logo ? '-z-logo' : ''}`
-      });
-    }
-  };
-
   const handleUpgradePayment = async () => {
     try {
       setLoading(true);

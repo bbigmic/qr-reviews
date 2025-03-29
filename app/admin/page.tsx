@@ -52,7 +52,7 @@ export default function AdminPanel() {
       const response = await fetch('/api/admin/orders');
       const data = await response.json();
       setOrders(data);
-    } catch (err) {
+    } catch (_err) {
       setError('Błąd podczas pobierania zamówień');
     }
   };
@@ -63,7 +63,7 @@ export default function AdminPanel() {
       const response = await fetch('/api/admin/affiliate-codes');
       const data = await response.json();
       setAffiliateCodes(data);
-    } catch (err) {
+    } catch (_err) {
       setError('Błąd podczas pobierania kodów afiliacyjnych');
     }
   };
@@ -74,7 +74,7 @@ export default function AdminPanel() {
       const response = await fetch('/api/admin/affiliate-signups');
       const data = await response.json();
       setAffiliateSignups(data);
-    } catch (err) {
+    } catch (_err) {
       setError('Błąd podczas pobierania zgłoszeń');
     }
   };
@@ -97,7 +97,7 @@ export default function AdminPanel() {
       await fetchAffiliateCodes();
       setNewCode({ code: '', discount: '', commission: '' });
       setIsModalOpen(false);
-    } catch (err) {
+    } catch (_err) {
       setError('Błąd podczas dodawania kodu afiliacyjnego');
     }
     setLoading(false);
@@ -113,7 +113,7 @@ export default function AdminPanel() {
       });
       if (!response.ok) throw new Error('Błąd podczas aktualizacji statusu');
       await fetchSignups();
-    } catch (err) {
+    } catch (_err) {
       setError('Błąd podczas aktualizacji statusu zgłoszenia');
     }
   };
