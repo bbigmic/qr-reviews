@@ -1,18 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-interface RequestContext {
-  params: {
-    id: string;
-  };
-}
-
 export async function PATCH(
   req: NextRequest,
-  context: RequestContext
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = context.params.id;
+    const { id } = await params;
     const data = await req.json();
 
     if (!data.status || !['PENDING', 'APPROVED', 'REJECTED'].includes(data.status)) {
