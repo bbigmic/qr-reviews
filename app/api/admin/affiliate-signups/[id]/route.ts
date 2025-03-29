@@ -1,27 +1,29 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 export async function PATCH(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const { status } = await request.json();
-    const { id } = params;
+    const id = params.id;
+    const data = await request.json();
 
-    if (!status || !['PENDING', 'APPROVED', 'REJECTED'].includes(status)) {
+    if (!data.status || !['PENDING', 'APPROVED', 'REJECTED'].includes(data.status)) {
       return NextResponse.json(
         { error: 'Nieprawidłowy status' },
         { status: 400 }
       );
     }
 
-    const signup = await prisma.affiliateSignup.update({
+    const updatedSignup = await prisma.affiliateSignup.update({
       where: { id },
-      data: { status }
+      data: {
+        status: data.status
+      }
     });
 
-    return NextResponse.json(signup);
+    return NextResponse.json(updatedSignup);
   } catch (error) {
     console.error('Błąd podczas aktualizacji zgłoszenia:', error);
     return NextResponse.json(
