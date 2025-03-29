@@ -34,6 +34,7 @@ model AffiliateCode {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   orders      Order[]
+  usages      AffiliateCodeUsage[]
 }
 
 model AffiliateSignup {
@@ -44,4 +45,14 @@ model AffiliateSignup {
   createdAt DateTime @default(now())
 
   @@map("affiliate_signups")
+}
+
+model AffiliateCodeUsage {
+  id              String        @id @default(cuid())
+  affiliateCode   AffiliateCode @relation(fields: [affiliateCodeId], references: [id])
+  affiliateCodeId String
+  orderId         String
+  createdAt       DateTime      @default(now())
+
+  @@index([affiliateCodeId])
 }
