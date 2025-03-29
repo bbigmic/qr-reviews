@@ -52,6 +52,7 @@ model AffiliateCodeUsage {
   affiliateCode   AffiliateCode @relation(fields: [affiliateCodeId], references: [id])
   affiliateCodeId String
   orderId         String
+  amount          Float         // Dodajemy pole amount
   createdAt       DateTime      @default(now())
 
   @@index([affiliateCodeId])
