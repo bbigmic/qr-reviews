@@ -434,7 +434,9 @@ export default function QRCodeDisplay({ placeId, placeName, isUpgradeFlow = fals
 
       <div className="space-y-4">
         <button
-          onClick={() => {
+          onClick={async () => {
+            if (!qrCode.current) return;
+
             const container = document.createElement('div');
             container.style.position = 'absolute';
             container.style.left = '-9999px';
@@ -448,100 +450,72 @@ export default function QRCodeDisplay({ placeId, placeName, isUpgradeFlow = fals
             container.style.padding = '20px';
             container.style.boxSizing = 'border-box';
 
-            if (showText) {
-              const text = document.createElement('div');
-              text.textContent = customText;
-              text.style.fontSize = '48px';
-              text.style.fontWeight = 'bold';
-              text.style.marginBottom = '48px';
-              text.style.color = '#1a1a1a';
-              container.appendChild(text);
-            }
-
-            const qrContainer = document.createElement('div');
-            qrContainer.style.width = '800px';
-            qrContainer.style.height = '800px';
-            qrContainer.style.marginTop = showText ? '0' : 'auto';
-            qrContainer.style.marginBottom = showStars ? '0' : 'auto';
-            container.appendChild(qrContainer);
-
-            if (qrRef.current) {
-              const qrSvg = qrRef.current.querySelector('svg');
-              if (qrSvg) {
-                qrSvg.setAttribute('width', '800');
-                qrSvg.setAttribute('height', '800');
-                qrContainer.appendChild(qrSvg.cloneNode(true));
-              }
-            }
-
-            if (showStars) {
-              const starsContainer = document.createElement('div');
-              starsContainer.style.display = 'flex';
-              starsContainer.style.justifyContent = 'center';
-              starsContainer.style.marginTop = '48px';
-              for (let i = 0; i < 5; i++) {
-                const star = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                star.setAttribute('width', '80');
-                star.setAttribute('height', '80');
-                star.setAttribute('fill', '#fbbf24');
-                star.setAttribute('viewBox', '0 0 20 20');
-                star.innerHTML = '<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />';
-                starsContainer.appendChild(star);
-              }
-              container.appendChild(starsContainer);
-            }
-
             document.body.appendChild(container);
 
-            // Czekamy na załadowanie kodu QR
-            setTimeout(() => {
-              // Najpierw generujemy warstwę z tekstem i gwiazdkami
-              html2canvas(container, {
-                scale: 2,
-                backgroundColor: 'white',
-                logging: false,
-                useCORS: true,
-                allowTaint: true
-              }).then((backgroundCanvas: HTMLCanvasElement) => {
-                // Teraz generujemy kod QR
-                if (qrRef.current) {
-                  html2canvas(qrRef.current, {
-                    scale: 2,
-                    backgroundColor: 'transparent',
-                    logging: false,
-                    useCORS: true,
-                    allowTaint: true
-                  }).then((qrCanvas: HTMLCanvasElement) => {
-                    // Tworzymy nowy canvas do nałożenia warstw
-                    const finalCanvas = document.createElement('canvas');
-                    finalCanvas.width = 2048; // 2x scale
-                    finalCanvas.height = 2048;
-                    const ctx = finalCanvas.getContext('2d');
+            try {
+              // Pobierz QR kod jako obraz
+              const qrBlob = await qrCode.current.getRawData('png') as Blob;
+              if (!qrBlob) return;
 
-                    if (ctx) {
-                      // Rysujemy tło z tekstem i gwiazdkami
-                      ctx.drawImage(backgroundCanvas, 0, 0);
-                      
-                      // Obliczamy pozycję i rozmiar kodu QR
-                      const qrSize = 1600; // 2x scale
-                      const qrX = (2048 - qrSize) / 2;
-                      const qrY = (2048 - qrSize) / 2;
-                      
-                      // Rysujemy kod QR
-                      ctx.drawImage(qrCanvas, qrX, qrY, qrSize, qrSize);
+              // Stwórz canvas do złożenia finalnego obrazu
+              const canvas = document.createElement('canvas');
+              canvas.width = 2048; // 2x scale
+              canvas.height = 2048;
+              const ctx = canvas.getContext('2d');
+              if (!ctx) return;
 
-                      // Pobieramy finalny obraz
-                      const link = document.createElement('a');
-                      link.download = `qr-kod-${placeName.toLowerCase().replace(/\s+/g, '-')}${logo ? '-z-logo' : ''}.png`;
-                      link.href = finalCanvas.toDataURL('image/png');
-                      link.click();
-                    }
-                    
-                    document.body.removeChild(container);
-                  });
-                }
+              // Wypełnij tło
+              ctx.fillStyle = 'white';
+              ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+              // Dodaj tekst jeśli jest włączony
+              if (showText) {
+                ctx.font = 'bold 96px Arial';
+                ctx.fillStyle = '#1a1a1a';
+                ctx.textAlign = 'center';
+                ctx.fillText(customText, 1024, 200);
+              }
+
+              // Wczytaj i narysuj QR kod
+              const qrImage = new Image();
+              qrImage.src = URL.createObjectURL(qrBlob);
+              await new Promise((resolve) => {
+                qrImage.onload = () => {
+                  const size = 1600;
+                  const x = (2048 - size) / 2;
+                  const y = showText ? 300 : (2048 - size) / 2;
+                  ctx.drawImage(qrImage, x, y, size, size);
+                  resolve(null);
+                };
               });
-            }, 1000);
+
+              // Dodaj gwiazdki jeśli są włączone
+              if (showStars) {
+                const starPath = new Path2D('M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z');
+                
+                ctx.fillStyle = '#fbbf24';
+                const starSize = 80;
+                const starSpacing = 100;
+                const startX = 1024 - (starSpacing * 2);
+                const startY = 1900;
+
+                for (let i = 0; i < 5; i++) {
+                  ctx.save();
+                  ctx.translate(startX + (starSpacing * i), startY);
+                  ctx.scale(4, 4);
+                  ctx.fill(starPath);
+                  ctx.restore();
+                }
+              }
+
+              // Pobierz finalny obraz
+              const link = document.createElement('a');
+              link.download = `qr-kod-${placeName.toLowerCase().replace(/\s+/g, '-')}${logo ? '-z-logo' : ''}.png`;
+              link.href = canvas.toDataURL('image/png');
+              link.click();
+            } finally {
+              document.body.removeChild(container);
+            }
           }}
           className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
         >
