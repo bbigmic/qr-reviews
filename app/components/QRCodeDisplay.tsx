@@ -506,13 +506,16 @@ export default function QRCodeDisplay({ placeId, placeName, isUpgradeFlow = fals
                 
                 ctx.fillStyle = '#fbbf24';
                 const starSpacing = 160;
-                const totalStarsWidth = starSpacing * 4; // 4 odstępy dla 5 gwiazdek
-                const startX = (canvas.width - totalStarsWidth) / 2;
+                const starScale = 8;
+                const starBaseSize = 20; // Przybliżony rozmiar oryginalnej ścieżki
+                const scaledStarSize = starBaseSize * starScale;
+                const totalStarsWidth = (scaledStarSize * 5) + (starSpacing * 4); // 5 gwiazdek i 4 odstępy
+                const startX = (canvas.width - totalStarsWidth) / 2 + (scaledStarSize / 2);
 
                 for (let i = 0; i < 5; i++) {
                   ctx.save();
-                  ctx.translate(startX + (starSpacing * i), currentY);
-                  ctx.scale(8, 8);
+                  ctx.translate(startX + (i * (scaledStarSize + starSpacing)), currentY);
+                  ctx.scale(starScale, starScale);
                   ctx.fill(starPath);
                   ctx.restore();
                 }
