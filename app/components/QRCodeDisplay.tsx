@@ -467,12 +467,25 @@ export default function QRCodeDisplay({ placeId, placeName, isUpgradeFlow = fals
               ctx.fillStyle = 'white';
               ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+              // Oblicz całkowitą wysokość wszystkich elementów
+              const qrSize = 1600;
+              const textHeight = showText ? 120 : 0; // Wysokość tekstu
+              const textMargin = showText ? 80 : 0; // Margines pod tekstem
+              const starsHeight = showStars ? 200 : 0; // Wysokość gwiazdek
+              const starsMargin = showStars ? 80 : 0; // Margines nad gwiazdkami
+              const totalHeight = textHeight + textMargin + qrSize + starsMargin + starsHeight;
+
+              // Oblicz pozycję startową Y, aby wszystko było wycentrowane w pionie
+              const startY = (canvas.height - totalHeight) / 2;
+              let currentY = startY;
+
               // Dodaj tekst jeśli jest włączony
               if (showText) {
                 ctx.font = 'bold 96px Arial';
                 ctx.fillStyle = '#1a1a1a';
                 ctx.textAlign = 'center';
-                ctx.fillText(customText, 1024, 200);
+                ctx.fillText(customText, canvas.width / 2, currentY + 96); // +96 to wysokość tekstu
+                currentY += textHeight + textMargin;
               }
 
               // Wczytaj i narysuj QR kod
@@ -480,13 +493,12 @@ export default function QRCodeDisplay({ placeId, placeName, isUpgradeFlow = fals
               qrImage.src = URL.createObjectURL(qrBlob);
               await new Promise((resolve) => {
                 qrImage.onload = () => {
-                  const size = 1600;
-                  const x = (2048 - size) / 2;
-                  const y = showText ? 300 : (2048 - size) / 2;
-                  ctx.drawImage(qrImage, x, y, size, size);
+                  const x = (canvas.width - qrSize) / 2;
+                  ctx.drawImage(qrImage, x, currentY, qrSize, qrSize);
                   resolve(null);
                 };
               });
+              currentY += qrSize + starsMargin;
 
               // Dodaj gwiazdki jeśli są włączone
               if (showStars) {
@@ -494,15 +506,12 @@ export default function QRCodeDisplay({ placeId, placeName, isUpgradeFlow = fals
                 
                 ctx.fillStyle = '#fbbf24';
                 const starSpacing = 160;
-                // Obliczamy całkowitą szerokość wszystkich gwiazdek
                 const totalStarsWidth = starSpacing * 4; // 4 odstępy dla 5 gwiazdek
-                // Obliczamy pozycję startową, aby gwiazdki były wycentrowane
                 const startX = (canvas.width - totalStarsWidth) / 2;
-                const startY = 1900;
 
                 for (let i = 0; i < 5; i++) {
                   ctx.save();
-                  ctx.translate(startX + (starSpacing * i), startY);
+                  ctx.translate(startX + (starSpacing * i), currentY);
                   ctx.scale(8, 8);
                   ctx.fill(starPath);
                   ctx.restore();
