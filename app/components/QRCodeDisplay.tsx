@@ -59,7 +59,6 @@ export default function QRCodeDisplay({ placeId, placeName, isUpgradeFlow = fals
   const [cornerSquaresColor, setCornerSquaresColor] = useState("#1a1a1a");
   const [cornerDotsStyle, setCornerDotsStyle] = useState<QRCornerDotType>("dot");
   const [cornerDotsColor, setCornerDotsColor] = useState("#1a1a1a");
-  const [showStars, setShowStars] = useState(false);
   const [showText, setShowText] = useState(false);
   const [customText, setCustomText] = useState("Oceń nas");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -358,19 +357,6 @@ export default function QRCodeDisplay({ placeId, placeName, isUpgradeFlow = fals
           <div className="space-y-4">
             <div className="flex items-center">
               <input
-                id="show-stars"
-                type="checkbox"
-                checked={showStars}
-                onChange={(e) => setShowStars(e.target.checked)}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              />
-              <label htmlFor="show-stars" className="ml-2 block text-sm text-gray-900">
-                Dodaj gwiazdki pod kodem QR
-              </label>
-            </div>
-            
-            <div className="flex items-center">
-              <input
                 id="show-text"
                 type="checkbox"
                 checked={showText}
@@ -403,9 +389,6 @@ export default function QRCodeDisplay({ placeId, placeName, isUpgradeFlow = fals
 
       <div className="flex flex-col items-center mb-8">
         <div className="flex flex-col items-center justify-center" style={{ minHeight: '400px' }}>
-          {showText && (
-            <div className="mb-2 text-2xl font-bold text-gray-900">{customText}</div>
-          )}
           <div ref={qrRef} className="qr-container" style={{ 
             transform: 'scale(0.35)',
             transformOrigin: 'center center',
@@ -414,20 +397,6 @@ export default function QRCodeDisplay({ placeId, placeName, isUpgradeFlow = fals
             alignItems: 'center',
             justifyContent: 'center'
           }}></div>
-          {showStars && (
-            <div className="mt-2 flex justify-center">
-              {[...Array(5)].map((_, i) => (
-                <svg
-                  key={i}
-                  className="w-8 h-8 sm:w-10 sm:h-10 text-yellow-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-              ))}
-            </div>
-          )}
         </div>
       </div>
 
@@ -471,9 +440,7 @@ export default function QRCodeDisplay({ placeId, placeName, isUpgradeFlow = fals
               const qrSize = 1600;
               const textHeight = showText ? 120 : 0; // Wysokość tekstu
               const textMargin = showText ? 80 : 0; // Margines pod tekstem
-              const starsHeight = showStars ? 200 : 0; // Wysokość gwiazdek
-              const starsMargin = showStars ? 80 : 0; // Margines nad gwiazdkami
-              const totalHeight = textHeight + textMargin + qrSize + starsMargin + starsHeight;
+              const totalHeight = textHeight + textMargin + qrSize;
 
               // Oblicz pozycję startową Y, aby wszystko było wycentrowane w pionie
               const startY = (canvas.height - totalHeight) / 2;
@@ -498,26 +465,6 @@ export default function QRCodeDisplay({ placeId, placeName, isUpgradeFlow = fals
                   resolve(null);
                 };
               });
-              currentY += qrSize + starsMargin;
-
-              // Dodaj gwiazdki jeśli są włączone
-              if (showStars) {
-                const starPath = new Path2D('M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z');
-                
-                ctx.fillStyle = '#fbbf24';
-                const starSpacing = 160;
-                const starWidth = 160; // szerokość pojedynczej gwiazdki po przeskalowaniu (20 * 8)
-                const totalStarsWidth = (starWidth * 5) + (starSpacing * 4); // szerokość wszystkich gwiazdek plus odstępy
-                const startX = (canvas.width - totalStarsWidth) / 2 + (starWidth / 2);
-
-                for (let i = 0; i < 5; i++) {
-                  ctx.save();
-                  ctx.translate(startX + (i * (starWidth + starSpacing)), currentY);
-                  ctx.scale(8, 8);
-                  ctx.fill(starPath);
-                  ctx.restore();
-                }
-              }
 
               // Pobierz finalny obraz
               const link = document.createElement('a');
