@@ -494,7 +494,7 @@ export default function QRCodeDisplay({ placeId, placeName, isUpgradeFlow = fals
                 
                 ctx.fillStyle = '#fbbf24';
                 const starSpacing = 160;
-                const totalStarsWidth = starSpacing * 4; // szerokość wszystkich gwiazdek i odstępów
+                const totalStarsWidth = starSpacing * 4; // szerokość dla 5 gwiazdek (4 odstępy między nimi)
                 const startX = (canvas.width - totalStarsWidth) / 2; // centrowanie względem szerokości canvasa
                 const startY = 1900;
 
