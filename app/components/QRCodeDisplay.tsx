@@ -389,6 +389,9 @@ export default function QRCodeDisplay({ placeId, placeName, isUpgradeFlow = fals
 
       <div className="flex flex-col items-center mb-8">
         <div className="flex flex-col items-center justify-center" style={{ minHeight: '400px' }}>
+          {showText && (
+            <div className="mb-4 text-2xl font-bold text-gray-900">{customText}</div>
+          )}
           <div ref={qrRef} className="qr-container" style={{ 
             transform: 'scale(0.35)',
             transformOrigin: 'center center',
