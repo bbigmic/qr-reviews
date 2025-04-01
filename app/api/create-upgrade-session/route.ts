@@ -21,14 +21,7 @@ export async function POST(request: Request) {
     }
 
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: [
-        'card',      // Karty płatnicze
-        'blik',      // BLIK
-        'p24',       // Przelewy24
-        'paypal',    // PayPal
-        'googlepay', // Google Pay
-        'applepay'   // Apple Pay
-      ],
+      payment_method_configuration: process.env.STRIPE_PAYMENT_METHOD_CONFIGURATION,
       line_items: [
         {
           price_data: {
