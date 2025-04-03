@@ -183,7 +183,7 @@ function MainContent() {
             </div>
 
             {/* Instrukcje */}
-            <div className="bg-white rounded-lg shadow-md p-6">
+            <div id="jak-to-dziala" className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">
                 Jak to działa?
               </h2>
@@ -210,7 +210,7 @@ function MainContent() {
                   <div>
                     <h3 className="text-lg font-medium text-gray-900">Dokonaj płatności</h3>
                     <p className="mt-2 text-sm text-gray-500">
-                      Zapłać 199 zł za wygenerowanie kodu QR
+                      Zapłać za wygenerowanie kodu QR
                     </p>
                   </div>
                 </div>
@@ -231,7 +231,7 @@ function MainContent() {
             </div>
 
             {/* Wyszukiwarka */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div id="generator" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="bg-white rounded-lg shadow-md p-6">
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">
                   Wyszukaj swoją firmę
@@ -280,7 +280,7 @@ function MainContent() {
                       <svg className="h-6 w-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                       </svg>
-                      <span>Dokonaj płatności 199 zł</span>
+                      <span>Dokonaj płatności </span>
                     </div>
                     <div className="flex items-center space-x-3 text-gray-600">
                       <svg className="h-6 w-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -538,16 +538,69 @@ function MainContent() {
 // Komponent główny z Suspense
 export default function Home() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="p-8 text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
-            Ładowanie...
-          </h1>
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      {/* Sekcja Hero */}
+      <div className="relative overflow-hidden">
+        {/* Zdjęcie w tle */}
+        <div className="absolute inset-0 w-full h-full">
+          <div 
+            className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: 'url("/hero-background.png")'
+            }}
+          />
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-white/10"></div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto relative">
+          <div className="relative z-10 pb-8 sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
+            <main className="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
+              <div className="sm:text-center lg:text-left">
+                <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
+                  <span className="block">Zbieraj opinie</span>
+                  <span className="block text-blue-600">łatwiej niż kiedykolwiek</span>
+                </h1>
+                <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
+                  Generuj unikalne kody QR, które przekierują Twoich klientów bezpośrednio do wystawienia opinii w Google. 
+                  Zwiększ liczbę pozytywnych opinii i popraw widoczność swojej firmy.
+                </p>
+                <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
+                  <div className="rounded-md shadow">
+                    <a
+                      href="#generator"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        document.getElementById('generator')?.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                      className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 md:py-4 md:text-lg md:px-10"
+                    >
+                      Wygeneruj kod QR
+                    </a>
+                  </div>
+                  <div className="mt-3 sm:mt-0 sm:ml-3">
+                    <a
+                      href="#jak-to-dziala"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        document.getElementById('jak-to-dziala')?.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                      className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 md:py-4 md:text-lg md:px-10"
+                    >
+                      Jak to działa?
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </main>
+          </div>
         </div>
       </div>
-    }>
-      <MainContent />
-    </Suspense>
+
+      {/* Główna zawartość */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <MainContent />
+      </div>
+    </div>
   );
 } 
