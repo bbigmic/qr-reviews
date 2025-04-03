@@ -61,6 +61,10 @@ export default function QRCodeDisplay({ placeId, placeName, isUpgradeFlow = fals
   const [cornerDotsColor, setCornerDotsColor] = useState("#1a1a1a");
   const [showText, setShowText] = useState(false);
   const [customText, setCustomText] = useState("Oceń nas");
+  const [discountCode, setDiscountCode] = useState('');
+  const [discount, setDiscount] = useState<number | null>(null);
+  const [discountMessage, setDiscountMessage] = useState<string | null>(null);
+  const [finalPrice, setFinalPrice] = useState(20);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const qrRef = useRef<HTMLDivElement>(null);
   const qrCode = useRef<QRCodeStyling | null>(null);
@@ -114,6 +118,39 @@ export default function QRCodeDisplay({ placeId, placeName, isUpgradeFlow = fals
     }
   };
 
+  const verifyDiscountCode = async () => {
+    setLoading(true);
+    setError(null);
+    setDiscountMessage(null);
+
+    try {
+      const response = await fetch('/api/verify-discount', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code: discountCode }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Błąd weryfikacji kodu rabatowego');
+      }
+
+      setDiscount(data.discount);
+      const newPrice = Math.round(20 * (1 - data.discount / 100) * 100) / 100;
+      setFinalPrice(newPrice);
+      setDiscountMessage(`Zastosowano rabat ${data.discount}%`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Błąd weryfikacji kodu rabatowego');
+      setDiscount(null);
+      setFinalPrice(20);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleUpgradePayment = async () => {
     try {
       setLoading(true);
@@ -124,7 +161,10 @@ export default function QRCodeDisplay({ placeId, placeName, isUpgradeFlow = fals
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ placeId }),
+        body: JSON.stringify({ 
+          placeId,
+          discountCode: discount ? discountCode : undefined 
+        }),
       });
 
       const data = await response.json();
@@ -513,11 +553,42 @@ export default function QRCodeDisplay({ placeId, placeName, isUpgradeFlow = fals
             </div>
             <div className="text-center">
               <p className="text-2xl font-bold text-blue-600 mb-1">
-                Tylko 20 zł
+                {discount ? (
+                  <>
+                    <span className="line-through text-gray-400 mr-2">20 zł</span>
+                    {finalPrice} zł
+                  </>
+                ) : (
+                  '20 zł'
+                )}
               </p>
               <p className="text-sm text-gray-500 mb-4">
                 Jednorazowa płatność
               </p>
+            </div>
+            <div className="w-full space-y-4">
+              <div className="flex space-x-2">
+                <input
+                  type="text"
+                  value={discountCode}
+                  onChange={(e) => setDiscountCode(e.target.value)}
+                  placeholder="Kod rabatowy"
+                  className="flex-1 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  disabled={loading}
+                />
+                <button
+                  onClick={verifyDiscountCode}
+                  disabled={loading || !discountCode}
+                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg border border-gray-300 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Zastosuj
+                </button>
+              </div>
+              {discountMessage && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                  <p className="text-sm text-green-700">{discountMessage}</p>
+                </div>
+              )}
             </div>
             {error && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-4 w-full">
@@ -547,7 +618,7 @@ export default function QRCodeDisplay({ placeId, placeName, isUpgradeFlow = fals
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                   </svg>
-                  Ulepsz o logo za 20 zł
+                  Ulepsz o logo za {finalPrice} zł
                 </>
               )}
             </button>
