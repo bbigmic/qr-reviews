@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import GooglePlacesSearch from './components/GooglePlacesSearch';
 import StripePayment from './components/StripePayment';
@@ -535,7 +535,7 @@ function MainContent() {
   );
 }
 
-// Komponent główny z Suspense
+// Komponent główny
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
