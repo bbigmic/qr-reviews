@@ -1,18 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-interface RouteContext {
-  params: {
-    id: string;
-  };
-}
-
 export async function DELETE(
-  _request: NextRequest,
-  context: RouteContext
-) {
+  request: NextRequest,
+  { params }: { params: { id: string } }
+): Promise<NextResponse> {
   try {
-    const { id } = context.params;
+    const id = params.id;
 
     // Usuwamy kod afiliacyjny
     await prisma.affiliateCode.delete({
