@@ -136,7 +136,7 @@ export default function PrivacyPolicy() {
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">12. Kontakt</h2>
             <p>W sprawach związanych z ochroną danych osobowych można kontaktować się z nami:</p>
             <ul className="list-disc pl-6 mt-2">
-              <li>Email: kontakt@kodqr.eu</li>
+              <li>Email: kontakt@qropinie.pl</li>
             </ul>
           </section>
 

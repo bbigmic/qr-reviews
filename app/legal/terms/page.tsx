@@ -25,14 +25,14 @@ export default function Terms() {
         <div className="prose prose-blue max-w-none">
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">1. Postanowienia ogólne</h2>
-            <p>Niniejszy regulamin określa zasady korzystania z serwisu QR Reviews, dostępnego pod adresem kodqr.eu.</p>
+            <p>Niniejszy regulamin określa zasady korzystania z serwisu QR Reviews, dostępnego pod adresem qropinie.pl.</p>
             <p>Właścicielem serwisu jest QR Reviews z siedzibą w Polsce.</p>
           </section>
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">2. Definicje</h2>
             <ul className="list-disc pl-6 mt-2">
-              <li><strong>Serwis</strong> - strona internetowa dostępna pod adresem kodqr.eu</li>
+              <li><strong>Serwis</strong> - strona internetowa dostępna pod adresem qropinie.pl</li>
               <li><strong>Użytkownik</strong> - osoba fizyczna lub prawna korzystająca z Serwisu</li>
               <li><strong>Kod QR</strong> - wygenerowany przez Serwis kod prowadzący do strony z opiniami Google</li>
               <li><strong>Partner Afiliacyjny</strong> - osoba lub firma uczestnicząca w programie afiliacyjnym Serwisu</li>
@@ -89,7 +89,7 @@ export default function Terms() {
             <ul className="list-disc pl-6 mt-2">
               <li>Prowizja wynosi do 50% od każdej sprzedaży</li>
               <li>Szczegóły dotyczące wysokości prowizji oraz warunków jej wypłaty są ustalane indywidualnie z każdym Partnerem Afiliacyjnym</li>
-              <li>Minimalna kwota wypłaty wynosi 1000 zł lub mniej w przypadku złożenia wniosku i pozytywnym rozpatrzeniu go przez Administratora. Wniosek należy składać mailowo na kontakt@kodqr.eu</li>
+              <li>Minimalna kwota wypłaty wynosi 1000 zł lub mniej w przypadku złożenia wniosku i pozytywnym rozpatrzeniu go przez Administratora. Wniosek należy składać mailowo na kontakt@qropinie.pl</li>
               <li>Wypłaty są realizowane do 10. dnia każdego miesiąca</li>
               <li>Partner może oferować rabaty w ramach ustalonego limitu</li>
             </ul>
