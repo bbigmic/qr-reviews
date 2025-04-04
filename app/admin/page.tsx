@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Logo from '../components/Logo';
 
 interface Order {
@@ -34,15 +35,48 @@ interface AffiliateSignup {
   createdAt: string;
 }
 
+interface DashboardStats {
+  totalOrders: number;
+  totalRevenue: number;
+  activeAffiliates: number;
+  pendingSignups: number;
+  recentOrders: Order[];
+  topAffiliates: {
+    code: string;
+    commission: number;
+    usageCount?: number;
+  }[];
+}
+
 export default function AdminPanel() {
-  const [activeTab, setActiveTab] = useState<'orders' | 'affiliate' | 'signups'>('orders');
+  const router = useRouter();
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'orders' | 'affiliate' | 'signups'>('dashboard');
   const [orders, setOrders] = useState<Order[]>([]);
   const [affiliateCodes, setAffiliateCodes] = useState<AffiliateCode[]>([]);
   const [affiliateSignups, setAffiliateSignups] = useState<AffiliateSignup[]>([]);
+  const [dashboardStats, setDashboardStats] = useState<DashboardStats | null>(null);
   const [newCode, setNewCode] = useState({ code: '', discount: '', commission: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('/api/admin/check-auth');
+        if (response.ok) {
+          setIsAuthorized(true);
+        } else {
+          router.push('/admin/login');
+        }
+      } catch (error) {
+        router.push('/admin/login');
+      }
+    };
+
+    checkAuth();
+  }, [router]);
 
   // Pobieranie zamówień
   const fetchOrders = async () => {
@@ -74,6 +108,17 @@ export default function AdminPanel() {
       setAffiliateSignups(data);
     } catch {
       setError('Wystąpił błąd podczas pobierania zgłoszeń');
+    }
+  };
+
+  // Pobieranie statystyk dashboardu
+  const fetchDashboardStats = async () => {
+    try {
+      const response = await fetch('/api/admin/dashboard-stats');
+      const data = await response.json();
+      setDashboardStats(data);
+    } catch {
+      setError('Wystąpił błąd podczas pobierania statystyk');
     }
   };
 
@@ -120,7 +165,12 @@ export default function AdminPanel() {
     fetchOrders();
     fetchAffiliateCodes();
     fetchSignups();
+    fetchDashboardStats();
   }, []);
+
+  if (!isAuthorized) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -133,6 +183,16 @@ export default function AdminPanel() {
                 <h1 className="text-xl font-bold text-gray-900">Panel Administracyjny</h1>
               </div>
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+                <button
+                  onClick={() => setActiveTab('dashboard')}
+                  className={`${
+                    activeTab === 'dashboard'
+                      ? 'border-blue-500 text-gray-900'
+                      : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                  } inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium`}
+                >
+                  Dashboard
+                </button>
                 <button
                   onClick={() => setActiveTab('orders')}
                   className={`${
@@ -176,7 +236,147 @@ export default function AdminPanel() {
           </div>
         )}
 
-        {activeTab === 'orders' ? (
+        {activeTab === 'dashboard' ? (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="bg-white overflow-hidden shadow rounded-lg">
+              <div className="p-5">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0">
+                    <svg className="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                  </div>
+                  <div className="ml-5 w-0 flex-1">
+                    <dl>
+                      <dt className="text-sm font-medium text-gray-500 truncate">Łączna liczba zamówień</dt>
+                      <dd className="flex items-baseline">
+                        <div className="text-2xl font-semibold text-gray-900">{dashboardStats?.totalOrders || 0}</div>
+                      </dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white overflow-hidden shadow rounded-lg">
+              <div className="p-5">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0">
+                    <svg className="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div className="ml-5 w-0 flex-1">
+                    <dl>
+                      <dt className="text-sm font-medium text-gray-500 truncate">Łączny przychód</dt>
+                      <dd className="flex items-baseline">
+                        <div className="text-2xl font-semibold text-gray-900">{dashboardStats?.totalRevenue || 0} zł</div>
+                      </dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white overflow-hidden shadow rounded-lg">
+              <div className="p-5">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0">
+                    <svg className="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  </div>
+                  <div className="ml-5 w-0 flex-1">
+                    <dl>
+                      <dt className="text-sm font-medium text-gray-500 truncate">Aktywni partnerzy</dt>
+                      <dd className="flex items-baseline">
+                        <div className="text-2xl font-semibold text-gray-900">{dashboardStats?.activeAffiliates || 0}</div>
+                      </dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white overflow-hidden shadow rounded-lg">
+              <div className="p-5">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0">
+                    <svg className="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div className="ml-5 w-0 flex-1">
+                    <dl>
+                      <dt className="text-sm font-medium text-gray-500 truncate">Oczekujące zgłoszenia</dt>
+                      <dd className="flex items-baseline">
+                        <div className="text-2xl font-semibold text-gray-900">{dashboardStats?.pendingSignups || 0}</div>
+                      </dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white shadow rounded-lg col-span-2">
+              <div className="px-4 py-5 sm:p-6">
+                <h3 className="text-lg leading-6 font-medium text-gray-900">Ostatnie zamówienia</h3>
+                <div className="mt-4">
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">ID</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">Data</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Kwota</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {dashboardStats?.recentOrders?.map((order) => (
+                          <tr key={order.id}>
+                            <td className="px-2 py-4 whitespace-nowrap text-sm text-gray-900">{order.id.slice(0, 12)}...</td>
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{new Date(order.createdAt).toLocaleDateString()}</td>
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{order.amount} zł</td>
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{order.status}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white shadow rounded-lg col-span-2">
+              <div className="px-4 py-5 sm:p-6">
+                <h3 className="text-lg leading-6 font-medium text-gray-900">Najlepsi partnerzy</h3>
+                <div className="mt-4">
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kod</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prowizja</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ilość użyć kodu</th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {dashboardStats?.topAffiliates?.map((affiliate) => (
+                          <tr key={affiliate.code}>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{affiliate.code}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{affiliate.commission} zł</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{affiliate.usageCount || 0}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : activeTab === 'orders' ? (
           <div className="bg-white shadow rounded-lg">
             <div className="px-4 py-5 sm:p-6">
               <h2 className="text-lg font-medium text-gray-900 mb-4">Lista Zamówień</h2>
