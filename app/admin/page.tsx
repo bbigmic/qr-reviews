@@ -70,7 +70,7 @@ export default function AdminPanel() {
         } else {
           router.push('/admin/login');
         }
-      } catch (error) {
+      } catch {
         router.push('/admin/login');
       }
     };

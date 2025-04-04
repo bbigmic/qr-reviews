@@ -25,7 +25,7 @@ export default function LoginPage() {
       } else {
         setError('Nieprawidłowe hasło');
       }
-    } catch (error) {
+    } catch {
       setError('Wystąpił błąd podczas logowania');
     }
   };
