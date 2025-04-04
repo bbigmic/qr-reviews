@@ -62,7 +62,6 @@ export default function DPA() {
               <li>Zapewnienia bezpieczeństwa danych</li>
               <li>Zachowania poufności</li>
               <li>Pomocy Administratorowi w realizacji praw osób, których dane dotyczą</li>
-              <li>Usunięcia danych po zakończeniu świadczenia usług</li>
             </ul>
           </section>
 
