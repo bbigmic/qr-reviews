@@ -479,19 +479,12 @@ export default function AdminPanel() {
                         <td className="px-6 py-3 text-left text-xs font-medium">
                           <button
                             onClick={() => {
-                              if (code.isActive) {
-                                // Usuwanie kodu
-                                fetch(`/api/admin/affiliate-codes/${code.id}`, {
-                                  method: 'DELETE',
-                                }).then(() => fetchAffiliateCodes());
-                              } else {
-                                // Aktywacja kodu
-                                fetch(`/api/admin/affiliate-codes/${code.id}`, {
-                                  method: 'PATCH',
-                                  headers: { 'Content-Type': 'application/json' },
-                                  body: JSON.stringify({ isActive: true }),
-                                }).then(() => fetchAffiliateCodes());
-                              }
+                              // Toggle status
+                              fetch(`/api/admin/affiliate-codes/${code.id}`, {
+                                method: 'PATCH',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ isActive: !code.isActive }),
+                              }).then(() => fetchAffiliateCodes());
                             }}
                             className={`px-3 py-1 rounded-md ${
                               code.isActive
@@ -499,7 +492,7 @@ export default function AdminPanel() {
                                 : 'bg-green-100 text-green-700 hover:bg-green-200'
                             }`}
                           >
-                            {code.isActive ? 'Usuń' : 'Aktywuj'}
+                            {code.isActive ? 'Dezaktywuj' : 'Aktywuj'}
                           </button>
                         </td>
                       </tr>
