@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { prisma } from '@/lib/prisma';
 
-const UPGRADE_PRICE = 2000; // 20 zł w groszach
+const UPGRADE_PRICE = 1900; // 19 zł w groszach
 
 type DiscountCodes = {
   [key: string]: number;

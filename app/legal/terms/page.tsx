@@ -36,6 +36,7 @@ export default function Terms() {
               <li><strong>Użytkownik</strong> - osoba fizyczna lub prawna korzystająca z Serwisu</li>
               <li><strong>Kod QR</strong> - wygenerowany przez Serwis kod prowadzący do strony z opiniami Google</li>
               <li><strong>Partner Afiliacyjny</strong> - osoba lub firma uczestnicząca w programie afiliacyjnym Serwisu</li>
+              <li><strong>Administrator</strong> - QR Reviews z siedzibą w Polsce, będący właścicielem i operatorem Serwisu</li>
             </ul>
           </section>
 
@@ -65,7 +66,8 @@ export default function Terms() {
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">5. Płatności i rozliczenia</h2>
             <p>Zasady dotyczące płatności:</p>
             <ul className="list-disc pl-6 mt-2">
-              <li>Opłata za wygenerowanie kodu QR wynosi 199 zł</li>
+              <li>Domyślna opłata za wygenerowanie kodu QR wynosi 199 zł. Użycie kodu rabatowego zmniejszą tą opłatę. (minimalna opłata wynosi ok. 2 zł)</li>
+              <li>Domyślna opłata za dodanie logo do QR kodu wynosi 19 zł. Użycie kodu rabatowego zmniejszą tą opłatę. (minimalna opłata wynosi ok. 2 zł)</li>
               <li>Płatności są realizowane przez zewnętrznego operatora płatności</li>
               <li>Faktury są wystawiane automatycznie po dokonaniu płatności</li>
               <li>W przypadku programu afiliacyjnego, prowizje są wypłacane miesięcznie</li>
@@ -78,7 +80,7 @@ export default function Terms() {
             <ul className="list-disc pl-6 mt-2">
               <li>Zwrot jest możliwy w ciągu 14 dni od zakupu</li>
               <li>Zwrot nie jest możliwy po wygenerowaniu i pobraniu kodu QR</li>
-              <li>Środki są zwracane w tej samej formie, w jakiej dokonano płatności</li>
+              <li>Środki są zwracane w tej samej formie, w jakiej dokonano płatności lub innej określonej przez Administratora</li>
             </ul>
           </section>
 
@@ -87,7 +89,8 @@ export default function Terms() {
             <p>Zasady programu afiliacyjnego:</p>
             <ul className="list-disc pl-6 mt-2">
               <li>Prowizja wynosi do 50% od każdej sprzedaży</li>
-              <li>Minimalna kwota wypłaty wynosi 100 zł</li>
+              <li>Szczegóły dotyczące wysokości prowizji oraz warunków jej wypłaty są ustalane indywidualnie z każdym Partnerem Afiliacyjnym</li>
+              <li>Minimalna kwota wypłaty wynosi 1000 zł lub mniej w przypadku złożenia wniosku i pozytywnym rozpatrzeniu go przez Administratora. Wniosek należy składać mailowo na kontakt@kodqr.eu</li>
               <li>Wypłaty są realizowane do 10. dnia każdego miesiąca</li>
               <li>Partner może oferować rabaty w ramach ustalonego limitu</li>
             </ul>

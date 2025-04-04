@@ -64,7 +64,7 @@ export default function QRCodeDisplay({ placeId, placeName, isUpgradeFlow = fals
   const [discountCode, setDiscountCode] = useState('');
   const [discount, setDiscount] = useState<number | null>(null);
   const [discountMessage, setDiscountMessage] = useState<string | null>(null);
-  const [finalPrice, setFinalPrice] = useState(20);
+  const [finalPrice, setFinalPrice] = useState(19);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const qrRef = useRef<HTMLDivElement>(null);
   const qrCode = useRef<QRCodeStyling | null>(null);
@@ -139,13 +139,13 @@ export default function QRCodeDisplay({ placeId, placeName, isUpgradeFlow = fals
       }
 
       setDiscount(data.discount);
-      const newPrice = Math.round(20 * (1 - data.discount / 100) * 100) / 100;
+      const newPrice = Math.round(19 * (1 - data.discount / 100) * 100) / 100;
       setFinalPrice(newPrice);
       setDiscountMessage(`Zastosowano rabat ${data.discount}%`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Błąd weryfikacji kodu rabatowego');
       setDiscount(null);
-      setFinalPrice(20);
+      setFinalPrice(19);
     } finally {
       setLoading(false);
     }
@@ -555,11 +555,11 @@ export default function QRCodeDisplay({ placeId, placeName, isUpgradeFlow = fals
               <p className="text-2xl font-bold text-blue-600 mb-1">
                 {discount ? (
                   <>
-                    <span className="line-through text-gray-400 mr-2">20 zł</span>
+                    <span className="line-through text-gray-400 mr-2">19 zł</span>
                     {finalPrice} zł
                   </>
                 ) : (
-                  '20 zł'
+                  '19 zł'
                 )}
               </p>
               <p className="text-sm text-gray-500 mb-4">
