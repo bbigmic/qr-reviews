@@ -58,7 +58,6 @@ export default function Terms() {
               <li>Przestrzegania praw własności intelektualnej</li>
               <li>Nienaruszania praw osób trzecich</li>
               <li>Niekorzystania z Serwisu w sposób niezgodny z prawem</li>
-              <li>Przestrzegania zasad przetwarzania danych osobowych określonych w Umowie Powierzenia Przetwarzania Danych (DPA), która stanowi załącznik do niniejszego Regulaminu i jest dostępna pod adresem <a href="/legal/dpa" className="text-blue-600 hover:text-blue-500" target="_blank">Umowa DPA</a></li>
             </ul>
           </section>
 

@@ -49,16 +49,43 @@ export default function PrivacyPolicy() {
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">4. Cel i podstawa przetwarzania</h2>
             <p>Dane osobowe przetwarzamy w następujących celach:</p>
             <ul className="list-disc pl-6 mt-2">
-              <li>Świadczenie usług generowania kodów QR (podstawa: umowa)</li>
-              <li>Obsługa płatności (podstawa: umowa)</li>
-              <li>Realizacja programu afiliacyjnego (podstawa: umowa)</li>
-              <li>Marketing własnych usług (podstawa: uzasadniony interes)</li>
-              <li>Analiza i poprawa jakości usług (podstawa: uzasadniony interes)</li>
+              <li>Świadczenie usług generowania kodów QR (podstawa: art. 6 ust. 1 lit. b RODO - umowa)</li>
+              <li>Obsługa płatności (podstawa: art. 6 ust. 1 lit. b RODO - umowa)</li>
+              <li>Realizacja programu afiliacyjnego (podstawa: art. 6 ust. 1 lit. b RODO - umowa)</li>
+              <li>Marketing własnych usług (podstawa: art. 6 ust. 1 lit. f RODO - uzasadniony interes)</li>
+              <li>Analiza i poprawa jakości usług (podstawa: art. 6 ust. 1 lit. f RODO - uzasadniony interes)</li>
+              <li>Wypełnienie obowiązków prawnych (podstawa: art. 6 ust. 1 lit. c RODO)</li>
             </ul>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">5. Okres przechowywania danych</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">5. Odbiorcy danych</h2>
+            <p>Dane osobowe mogą być przekazywane następującym odbiorcom:</p>
+            <ul className="list-disc pl-6 mt-2">
+              <li>Podmiotom przetwarzającym płatności (np. Stripe)</li>
+              <li>Podmiotom świadczącym usługi hostingowe</li>
+              <li>Podmiotom świadczącym usługi analityczne</li>
+              <li>Organom państwowym na ich żądanie, w zakresie wynikającym z przepisów prawa</li>
+            </ul>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">6. Przekazywanie danych do państw trzecich</h2>
+            <p>Dane osobowe mogą być przekazywane do państw trzecich, w szczególności do USA, w związku z korzystaniem z usług podmiotów takich jak:</p>
+            <ul className="list-disc pl-6 mt-2">
+              <li>Stripe (przetwarzanie płatności)</li>
+              <li>Google Analytics (analiza ruchu na stronie)</li>
+            </ul>
+            <p className="mt-4">Przekazywanie danych do USA odbywa się na podstawie odpowiednich zabezpieczeń, w tym standardowych klauzul umownych zatwierdzonych przez Komisję Europejską.</p>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">7. Zautomatyzowane podejmowanie decyzji</h2>
+            <p>Dane osobowe nie są wykorzystywane do zautomatyzowanego podejmowania decyzji, w tym profilowania, które wywołuje wobec osoby, której dane dotyczą, skutki prawne lub w podobny sposób istotnie na nią wpływa.</p>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">8. Okres przechowywania danych</h2>
             <p>Dane osobowe przechowujemy przez okres:</p>
             <ul className="list-disc pl-6 mt-2">
               <li>Aktywności konta w serwisie</li>
@@ -69,7 +96,7 @@ export default function PrivacyPolicy() {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">6. Prawa użytkownika</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">9. Prawa użytkownika</h2>
             <p>Użytkownik ma prawo do:</p>
             <ul className="list-disc pl-6 mt-2">
               <li>Dostępu do swoich danych</li>
@@ -79,11 +106,12 @@ export default function PrivacyPolicy() {
               <li>Przenoszenia danych</li>
               <li>Wniesienia sprzeciwu</li>
               <li>Wycofania zgody na przetwarzanie</li>
+              <li>Wniesienia skargi do organu nadzorczego (Prezes Urzędu Ochrony Danych Osobowych)</li>
             </ul>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">7. Pliki cookies</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">10. Pliki cookies</h2>
             <p>Serwis wykorzystuje pliki cookies w celu:</p>
             <ul className="list-disc pl-6 mt-2">
               <li>Zapewnienia prawidłowego działania serwisu</li>
@@ -94,7 +122,7 @@ export default function PrivacyPolicy() {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">8. Bezpieczeństwo danych</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">11. Bezpieczeństwo danych</h2>
             <p>Stosujemy odpowiednie środki techniczne i organizacyjne zapewniające bezpieczeństwo danych osobowych, w tym:</p>
             <ul className="list-disc pl-6 mt-2">
               <li>Szyfrowanie SSL</li>
@@ -105,7 +133,7 @@ export default function PrivacyPolicy() {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">9. Kontakt</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">12. Kontakt</h2>
             <p>W sprawach związanych z ochroną danych osobowych można kontaktować się z nami:</p>
             <ul className="list-disc pl-6 mt-2">
               <li>Email: kontakt@kodqr.eu</li>
@@ -113,7 +141,7 @@ export default function PrivacyPolicy() {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">10. Zmiany polityki prywatności</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">13. Zmiany polityki prywatności</h2>
             <p>Zastrzegamy sobie prawo do wprowadzania zmian w Polityce Prywatności. O wszelkich zmianach będziemy informować użytkowników poprzez stronę internetową.</p>
           </section>
         </div>
