@@ -34,7 +34,10 @@ export async function POST(request: Request) {
     // Jeśli nie znaleziono statycznego kodu, sprawdź kody afiliacyjne
     const affiliateCode = await prisma.affiliateCode.findFirst({
       where: {
-        code: code,
+        code: {
+          equals: code,
+          mode: 'insensitive'
+        },
         isActive: true
       }
     });
