@@ -230,6 +230,54 @@ function MainContent() {
               </div>
             </div>
 
+            {/* Proces tworzenia QR kodu */}
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-6">
+                Proces tworzenia QR kodu
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="text-center">
+                  <div className="mb-4">
+                    <img 
+                      src="/qr-kod-black.png" 
+                      alt="Standardowy QR kod" 
+                      className="mx-auto h-48 w-48 object-contain"
+                    />
+                  </div>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">1. Standardowy QR kod</h3>
+                  <p className="text-sm text-gray-500">
+                    Otrzymujesz podstawowy QR kod w czarno-białej kolorystyce
+                  </p>
+                </div>
+                <div className="text-center">
+                  <div className="mb-4">
+                    <img 
+                      src="/qr-kod-z-logo.png" 
+                      alt="QR kod z logo" 
+                      className="mx-auto h-48 w-48 object-contain"
+                    />
+                  </div>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">2. Dodaj logo</h3>
+                  <p className="text-sm text-gray-500">
+                    Możesz dodać swoje logo do środka kodu QR
+                  </p>
+                </div>
+                <div className="text-center">
+                  <div className="mb-4">
+                    <img 
+                      src="/qr-kod-z-logo-modifed.png" 
+                      alt="QR kod z modyfikacjami" 
+                      className="mx-auto h-48 w-48 object-contain"
+                    />
+                  </div>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">3. Dostosuj wygląd</h3>
+                  <p className="text-sm text-gray-500">
+                    Zmień kolory i elementy kodu
+                  </p>
+                </div>
+              </div>
+            </div>
+
             {/* Wyszukiwarka */}
             <div id="generator" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="bg-white rounded-lg shadow-md p-6">
@@ -278,9 +326,15 @@ function MainContent() {
                     </div>
                     <div className="flex items-center space-x-3 text-gray-600">
                       <svg className="h-6 w-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+                      </svg>
+                      <span>Wpisz kod rabatowy</span>
+                    </div>
+                    <div className="flex items-center space-x-3 text-gray-600">
+                      <svg className="h-6 w-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                       </svg>
-                      <span>Dokonaj płatności </span>
+                      <span>Dokonaj płatności</span>
                     </div>
                     <div className="flex items-center space-x-3 text-gray-600">
                       <svg className="h-6 w-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -313,7 +367,7 @@ function MainContent() {
                 Nie możesz znaleźć swojej firmy?
               </h2>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                Prawdopodobnie nie masz jeszcze wizytówki Google. Zgłoś się do nas, a stworzymy ją dla Ciebie za darmo!
+                Prawdopodobnie nie masz jeszcze wizytówki Google. Zgłoś się do nas, a stworzymy ją dla Ciebie!
               </p>
             </div>
 
