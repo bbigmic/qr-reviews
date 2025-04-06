@@ -272,7 +272,7 @@ function MainContent() {
                   </div>
                   <h3 className="text-lg font-medium text-gray-900 mb-2">3. Dostosuj wygląd</h3>
                   <p className="text-sm text-gray-500">
-                    Zmień kolory i elementy kodu
+                    Opcjonalnie mień kolory i elementy kodu
                   </p>
                 </div>
               </div>
