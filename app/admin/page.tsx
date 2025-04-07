@@ -270,7 +270,7 @@ export default function AdminPanel() {
                     <dl>
                       <dt className="text-sm font-medium text-gray-500 truncate">Łączny przychód</dt>
                       <dd className="flex items-baseline">
-                        <div className="text-2xl font-semibold text-gray-900">{dashboardStats?.totalRevenue || 0} zł</div>
+                        <div className="text-2xl font-semibold text-gray-900">{dashboardStats?.totalRevenue ? dashboardStats.totalRevenue.toFixed(2) : '0.00'} zł</div>
                       </dd>
                     </dl>
                   </div>
@@ -337,7 +337,7 @@ export default function AdminPanel() {
                           <tr key={order.id}>
                             <td className="px-2 py-4 whitespace-nowrap text-sm text-gray-900">{order.id.slice(0, 12)}...</td>
                             <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{new Date(order.createdAt).toLocaleDateString()}</td>
-                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{order.amount} zł</td>
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{order.amount.toFixed(2)} zł</td>
                             <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{order.status}</td>
                           </tr>
                         ))}
@@ -413,7 +413,7 @@ export default function AdminPanel() {
                         <td className="px-6 py-3 text-left text-xs font-medium text-gray-900">{order.id}</td>
                         <td className="px-6 py-3 text-left text-xs font-medium text-gray-900">{new Date(order.createdAt).toLocaleDateString()}</td>
                         <td className="px-6 py-3 text-left text-xs font-medium text-gray-900">{order.placeId || '-'}</td>
-                        <td className="px-6 py-3 text-left text-xs font-medium text-gray-900">{order.amount} zł</td>
+                        <td className="px-6 py-3 text-left text-xs font-medium text-gray-900">{order.amount.toFixed(2)} zł</td>
                         <td className="px-6 py-3 text-left text-xs font-medium text-gray-900">{order.status}</td>
                         <td className="px-6 py-3 text-left text-xs font-medium text-gray-900">
                           {order.orderType === 'upgrade' ? 'Ulepszenie' : 'Standardowy'}
